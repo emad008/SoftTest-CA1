@@ -37,8 +37,8 @@ public class Engine {
         var previous = orderHistory.get(0);
 
         for (Order currentOrder : orderHistory) {
-            if (currentOrder.id >= previous.id) {
-                break;
+            if (currentOrder.id == previous.id) {
+                continue;
             }
 
             if (currentOrder.price != price) {
