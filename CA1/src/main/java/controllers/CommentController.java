@@ -44,6 +44,5 @@ public class CommentController {
         } catch (NotExistentComment e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-
     }
 }

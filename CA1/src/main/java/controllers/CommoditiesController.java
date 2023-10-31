@@ -1,5 +1,6 @@
 package controllers;
 
+import exceptions.InvalidSearchOption;
 import service.Baloot;
 import model.Comment;
 import model.Commodity;
@@ -57,13 +58,22 @@ public class CommoditiesController {
         String username = input.get("username");
         String commentText = input.get("comment");
 
-        User user = null;
+        User user;
         try {
             user = baloot.getUserById(username);
-        } catch (NotExistentUser ignored) {
+        } catch (NotExistentUser e) {
+            // Changed: This exception should not be ignored
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        Comment comment = new Comment(commentId, user.getEmail(), user.getUsername(), Integer.parseInt(id), commentText);
+        Commodity commodity;
+        try {
+            commodity = baloot.getCommodityById(id);
+        } catch (NotExistentCommodity e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
+        Comment comment = new Comment(commentId, user.getEmail(), user.getUsername(), Integer.parseInt(commodity.getId()), commentText);
         baloot.addComment(comment);
 
         return new ResponseEntity<>("comment added successfully!", HttpStatus.OK);
@@ -71,9 +81,15 @@ public class CommoditiesController {
 
     @GetMapping(value = "/commodities/{id}/comment")
     public ResponseEntity<ArrayList<Comment>> getCommodityComment(@PathVariable String id) {
-        ArrayList<Comment> comments = baloot.getCommentsForCommodity(Integer.parseInt(id));
-
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+        try {
+            ArrayList<Comment> comments = baloot.getCommentsForCommodity(
+                    Integer.parseInt(baloot.getCommodityById(id).getId())
+            );
+            return new ResponseEntity<>(comments, HttpStatus.OK);
+        } catch (NotExistentCommodity e) {
+            // We should check for commodity existent
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping(value = "/commodities/search")
@@ -81,14 +97,19 @@ public class CommoditiesController {
         String searchOption = input.get("searchOption");
         String searchValue = input.get("searchValue");
 
-        ArrayList<Commodity> commodities = switch (searchOption) {
-            case "name" -> baloot.filterCommoditiesByName(searchValue);
-            case "category" -> baloot.filterCommoditiesByCategory(searchValue);
-            case "provider" -> baloot.filterCommoditiesByProviderName(searchValue);
-            default -> new ArrayList<>();
-        };
+        try {
+            ArrayList<Commodity> commodities = switch (searchOption) {
+                case "name" -> baloot.filterCommoditiesByName(searchValue);
+                case "category" -> baloot.filterCommoditiesByCategory(searchValue);
+                case "provider" -> baloot.filterCommoditiesByProviderName(searchValue);
+                default -> throw new InvalidSearchOption();
+            };
 
-        return new ResponseEntity<>(commodities, HttpStatus.OK);
+            return new ResponseEntity<>(commodities, HttpStatus.OK);
+        } catch (InvalidSearchOption e) {
+            // We should check for commodity existent
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/commodities/{id}/suggested")
@@ -101,5 +122,4 @@ public class CommoditiesController {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
         }
     }
-
 }
