@@ -40,6 +40,7 @@ public class Baloot {
     }
 
     public void login(String userId, String password) throws NotExistentUser, IncorrectPassword {
+        System.out.println("FUCK");
         User user = this.getUserById(userId);
         if (!user.getPassword().equals(password))
             throw new IncorrectPassword();
