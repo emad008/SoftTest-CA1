@@ -49,7 +49,6 @@ public class Engine {
                 diff = currentOrder.quantity - previous.quantity;
                 previous = currentOrder;
             } else if (diff != currentOrder.quantity - previous.quantity) {
-                System.out.println("FUCK");
                 return 0;
             }
         }
