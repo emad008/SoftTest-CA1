@@ -1,6 +1,5 @@
-package controller;
+package controllers;
 
-import controllers.CommoditiesController;
 import exceptions.NotExistentCommodity;
 import exceptions.NotExistentUser;
 import model.Comment;

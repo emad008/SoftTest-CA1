@@ -1,6 +1,5 @@
-package controller;
+package controllers;
 
-import controllers.AuthenticationController;
 import exceptions.IncorrectPassword;
 import exceptions.NotExistentUser;
 import exceptions.UsernameAlreadyTaken;

@@ -38,6 +38,7 @@ public class User {
             throw new InvalidCreditRange();
 
         this.credit += amount;
+        System.out.println("FIKE: " + getUsername() + ' ' + this.credit);
     }
 
     public void withdrawCredit(float amount) throws InsufficientCredit {
