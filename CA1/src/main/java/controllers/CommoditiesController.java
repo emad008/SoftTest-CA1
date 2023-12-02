@@ -82,6 +82,7 @@ public class CommoditiesController {
     @GetMapping(value = "/commodities/{id}/comment")
     public ResponseEntity<ArrayList<Comment>> getCommodityComment(@PathVariable String id) {
         try {
+            System.out.println("FOKE " + id);
             ArrayList<Comment> comments = baloot.getCommentsForCommodity(
                     Integer.parseInt(baloot.getCommodityById(id).getId())
             );
@@ -104,9 +105,10 @@ public class CommoditiesController {
                 case "provider" -> baloot.filterCommoditiesByProviderName(searchValue);
                 default -> throw new InvalidSearchOption();
             };
-
+            System.out.println("HELL NA");
             return new ResponseEntity<>(commodities, HttpStatus.OK);
         } catch (InvalidSearchOption e) {
+            System.out.println("FOKE: " + e.getMessage());
             // We should check for commodity existent
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
         }
