@@ -41,7 +41,5 @@ public class UserController {
             return new ResponseEntity<>("Please enter a valid number for the credit amount."
                     , HttpStatus.BAD_REQUEST);
         }
-
-
     }
 }

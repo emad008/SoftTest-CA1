@@ -1,7 +1,9 @@
 package model;
 
 import exceptions.NotInStock;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.Map;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Commodity {
     private String id;
     private String name;
@@ -22,6 +25,16 @@ public class Commodity {
 
     private Map<String, Integer> userRate = new HashMap<>();
     private float initRate;
+
+    public Commodity(String id, String name, String providerId, int price, ArrayList<String> categories, float initRate, int inStock) {
+        this.setId(id);
+        this.setName(name);
+        this.setProviderId(providerId);
+        this.setPrice(price);
+        this.setCategories(categories);
+        this.setInitRate(initRate);
+        this.setInStock(inStock);
+    }
 
     public void updateInStock(int amount) throws NotInStock {
         if ((this.inStock + amount) < 0)
