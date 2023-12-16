@@ -29,7 +29,6 @@ public class CommentControllerTest {
     public void setUp() {
         mockCloseable = MockitoAnnotations.openMocks(this);
     }
-
     @AfterEach
     void tearDown() throws Exception {
         mockCloseable.close();
