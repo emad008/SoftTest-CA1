@@ -3,7 +3,8 @@ package domain;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class EngineTest {
     private Engine engine;
@@ -48,6 +49,21 @@ public class EngineTest {
     }
 
     @Test
+    public void testGetQuantityPatternByPriceWithDifferentPrices() {
+        Order order1 = new Order(1, 1, 100, 5);
+        Order order2 = new Order(2, 1, 100, -14);
+        Order order3 = new Order(3, 1, 350, 14);
+
+        engine.orderHistory.add(order3);
+        engine.orderHistory.add(order1);
+        engine.orderHistory.add(order2);
+
+        int quantityPattern = engine.getQuantityPatternByPrice(100);
+
+        assertEquals(0, quantityPattern);
+    }
+
+    @Test
     public void testGetQuantityPatternByPriceNoOrders() {
         int quantityPattern = engine.getQuantityPatternByPrice(100);
         assertEquals(0, quantityPattern);
@@ -62,6 +78,28 @@ public class EngineTest {
         int fraudulentQuantity = engine.getCustomerFraudulentQuantity(order1);
 
         assertEquals(0, fraudulentQuantity);
+    }
+
+    @Test
+    public void testGetCustomerFraudulentQuantityWithTwoEqualQuantityOrders() {
+        Order order1 = new Order(1, 1, 100, 8);
+
+        engine.orderHistory.add(order1);
+
+        int fraudulentQuantity = engine.getCustomerFraudulentQuantity(new Order(2, 1, 100, 8));
+
+        assertEquals(0, fraudulentQuantity);
+    }
+
+    @Test
+    public void testGetCustomerFraudulentQuantityWithTwoOrders() {
+        Order order1 = new Order(1, 1, 100, 8);
+
+        engine.orderHistory.add(order1);
+
+        int fraudulentQuantity = engine.getCustomerFraudulentQuantity(new Order(2, 1, 100, 10));
+
+        assertEquals(2, fraudulentQuantity);
     }
 
     @Test
